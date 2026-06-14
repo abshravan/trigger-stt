@@ -124,7 +124,8 @@ speech_n8n/
 
 ### 1. Prerequisites
 
-- **Python 3.11+**
+- **Python 3.11 – 3.13** (tested on 3.13; the pinned dependency floors in
+  `requirements.txt` are the first versions with Python 3.13 wheels)
 - A working **microphone**
 - **PortAudio** (required by `sounddevice`):
   - macOS: `brew install portaudio`

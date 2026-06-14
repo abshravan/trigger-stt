@@ -1,16 +1,22 @@
+# Requires Python 3.11 - 3.13.
+# Versions below are the minimums that ship wheels for Python 3.13
+# (numpy >= 2.1, torch >= 2.5, ctranslate2 >= 4.5 via faster-whisper >= 1.1,
+#  onnxruntime >= 1.20). On Python 3.11 / 3.12 these versions also work.
+
 # Core runtime
-sounddevice==0.4.7
-numpy==1.26.4
-faster-whisper==1.0.3
-silero-vad==5.1.2
-torch==2.3.1
-requests==2.32.3
-python-dotenv==1.0.1
+sounddevice>=0.4.7
+numpy>=2.1.0
+faster-whisper>=1.1.0        # pulls ctranslate2 >= 4.5 (has cp313 wheels)
+silero-vad>=5.1.2
+torch>=2.5.0                 # first release with Python 3.13 wheels
+requests>=2.32.3
+python-dotenv>=1.0.1
 
 # Bonus / optional features
-openwakeword==0.6.0        # Wake word detection (Feature 5)
-pynput==1.7.7              # Global hotkey / push-to-talk (bonus)
-pyttsx3==2.90              # Optional local text-to-speech (bonus)
+openwakeword>=0.6.0          # Wake word detection (Feature 5)
+onnxruntime>=1.20.0          # openWakeWord backend; 1.20 adds cp313 wheels
+pynput>=1.7.7               # Global hotkey / push-to-talk (bonus)
+pyttsx3>=2.90               # Optional local text-to-speech (bonus)
 
 # Testing
-pytest==8.2.2
+pytest>=8.3.0
