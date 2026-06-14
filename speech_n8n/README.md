@@ -315,6 +315,7 @@ under a second and need no microphone or GPU.
 | Speech cut off early | Increase `SILENCE_TIMEOUT`; lower `VAD_THRESHOLD`. |
 | Picks up noise as speech | Raise `VAD_THRESHOLD`; raise `MIN_SPEECH_DURATION`. |
 | Wake word never fires | Lower `WAKEWORD_THRESHOLD`; confirm the model name in `WAKEWORD_MODELS`. |
+| `No module named 'tflite_runtime'` / `pip install tflite-runtime` fails | Expected on Windows / Python 3.13 — `tflite-runtime` has no wheels there. The app uses the **ONNX** backend (`onnxruntime`) instead, so just ensure `onnxruntime` is installed (`pip install -r requirements.txt`). No `tflite-runtime` needed. |
 | `n8n request failed` | Check the URL, that the workflow is **active**, and n8n is reachable. |
 | First run is slow | Models download on first use; subsequent runs use the local cache. |
 

@@ -56,6 +56,9 @@ class OpenWakeWordDetector:
         models: openWakeWord model names (e.g. ``["hey_jarvis"]``).
         threshold: Score above which a detection fires.
         sample_rate: Audio sample rate; openWakeWord expects 16 kHz.
+        inference_framework: ``"onnx"`` (default) or ``"tflite"``. ONNX is the
+            default because ``tflite_runtime`` has no wheels on Windows or
+            Python 3.13, whereas ``onnxruntime`` installs everywhere.
     """
 
     enabled = True
@@ -65,20 +68,41 @@ class OpenWakeWordDetector:
         models: List[str],
         threshold: float = 0.5,
         sample_rate: int = 16000,
+        inference_framework: str = "onnx",
     ) -> None:
         self.models = models
         self.threshold = threshold
         self.sample_rate = sample_rate
+        self.inference_framework = inference_framework
         self._model: Optional[object] = None
 
     def load(self) -> None:
-        """Load the openWakeWord model(s) once."""
+        """Load the openWakeWord model(s) once.
+
+        The pretrained models (including the shared melspectrogram and embedding
+        models) are downloaded on first use; the download is idempotent.
+        """
         if self._model is not None:
             return
         from openwakeword.model import Model
+        from openwakeword import utils as oww_utils
 
-        logger.info("Loading wake word models: %s", ", ".join(self.models))
-        self._model = Model(wakeword_models=self.models)
+        logger.info(
+            "Loading wake word models: %s (framework=%s)",
+            ", ".join(self.models),
+            self.inference_framework,
+        )
+        # Ensure the ONNX/tflite model files exist locally before constructing
+        # the Model, otherwise openWakeWord raises a confusing import error.
+        try:
+            oww_utils.download_models(model_names=self.models)
+        except Exception as exc:  # noqa: BLE001 - download is best-effort
+            logger.warning("Could not pre-download wake word models: %s", exc)
+
+        self._model = Model(
+            wakeword_models=self.models,
+            inference_framework=self.inference_framework,
+        )
         logger.info("Wake word models loaded.")
 
     def reset(self) -> None:
